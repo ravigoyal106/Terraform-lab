@@ -1,0 +1,1 @@
+#### This repo is for building and learning aws resources using terraform.
