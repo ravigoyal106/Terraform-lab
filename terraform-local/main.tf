@@ -33,3 +33,18 @@ resource "local_file" "File1" {
 output "File1_file_path" {
 value = local_file.File1.filename  
 }
+
+# Terraform count and for_each
+
+resource "local_file" "multi" {
+  count = 3
+  filename = "${path.module}/file-${count.index}.txt"
+  content = "This is file number ${count.index}"
+}
+
+# for_each
+resource "local_file" "multi_each" {
+for_each = toset([ "dev", "staging", "prod" ])
+filename = "${path.module}/${each.key}.txt"
+content = "This is the file ${each.value} environment file"  
+}
