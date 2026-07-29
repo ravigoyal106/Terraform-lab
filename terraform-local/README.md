@@ -21,7 +21,7 @@ This is Terraform's memory. It records what infrastructure it has already create
 
 ## Resources, Variables, and Outputs
 
-### 1. Resource - The actual infra
+## 1. Resource - The actual infra
 - A resource block tell terraform create this resource.
 ```
 resource "aws_instance" "my_server" {
@@ -35,7 +35,7 @@ resource "aws_instance" "my_server" {
 # inside {} argument for that resource like here "t2.micro"
 ```
 
-### 1. Variables
+## 2. Variables
 ```
 variable "instance_type" {
   description = ""
@@ -48,4 +48,15 @@ resource "aws_instance" "my_server" {
   ami           = "ami-0123456789"
   instance_type = var.instance_type # Ref variable
 }
+```
+## 3. Output Block
+```
+output "hello_file_path" {
+  value       = local_file.Hello.filename
+  description = "Path of the created file"
+  sensitive   = false
+}
+# value — required the actual data to expose
+# description — optional, self-documenting
+# sensitive — hides value from CLI output 
 ```

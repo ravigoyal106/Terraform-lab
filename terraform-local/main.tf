@@ -29,4 +29,12 @@ variable "file_content" {
 resource "local_file" "var-testfile" {
   filename = "${path.module}/vartestfile.txt"
   content = var.file_content  # Ref. the variable above block
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+# Output
+output "vartestfile_path" {
+  value = local_file.var-testfile.filename
 }
