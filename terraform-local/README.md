@@ -25,7 +25,7 @@ provider "aws" {
 
 ### The `terraform.tfstate` File
 
-This is Terraform's memory. It records what infrastructure has already been created and maps it back to your code. `terraform.tfstate` often contains sensitive data.
+- This is Terraform's memory. It records what infrastructure has already been created and maps it back to your code. `terraform.tfstate` often contains sensitive data.
 ---
 
 ## Resources, Variables, and Outputs
