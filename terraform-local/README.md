@@ -140,6 +140,6 @@ resource "local_file" "backup" {
   filename = "${path.module}/backup.txt"
   content  = "Backup file"
 }
-# if create backup is true, count =1 resource created , false count 0
+# if create backup is true, count =1, resource created , false count 0
 ```
 
