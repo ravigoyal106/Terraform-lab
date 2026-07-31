@@ -54,9 +54,31 @@ resource "local_file" "foreach_test" {
   # will create files dev.txt,staging.txt and prod.txt
 }
 
+# `locals` block
+locals {
+  environment_name = "prod"
+  full_file_name  =  "${local.environment_name}-config.txt"
+  common_tags = {
+    project = "terraform-learning"
+    owner = "ravi"
+  }
+}
 
+resource "local_file" "local_practice" {
+filename = local.environment_name
+content = "Environment ${local.environment_name}"
 
+}
 
+# Conditional Expression
 
+variable "create_backup" {
+  type    = bool
+  default = false
+}
 
-
+resource "local_file" "backup" {
+  count    = var.create_backup ? 1 : 0
+  filename = "${path.module}/backup.txt"
+  content  = "Backup file"
+}

@@ -99,3 +99,47 @@ resource "local_file" "countuses" {
 - Result: `countuses-0.txt`, `countuses-1.txt`, `countuses-2.txt`
 
 ### `for_each`
+- In `count` when we delete the middle item terraform reindexes everything (item [1] becomes [2]) terraform see this as destroying and recreating resources. This is the `count`s biggest weakness.
+```
+resource "local_file" "multi_each" {
+  for_each = toset(["dev", "staging", "prod"])
+  filename = "${path.module}/${each.key}.txt"
+  content  = "This is the ${each.value} environment file"
+}
+
+```
+### `local` block 
+- A local value is like a variable, but its not an input, it's like a constant we use multiple times same value.
+
+```
+locals {
+  environment_name = "production"
+  full_file_name   = "${local.environment_name}-config.txt"
+  common_tags = {
+    Project = "terraform-learning"
+    Owner   = "ravi"
+  }
+}
+
+resource "local_file" "example" {
+  filename = local.full_file_name
+  content  = "Environment: ${local.environment_name}"
+}
+```
+## Conditional Expression
+- Terraform has a ternary-style conditional.
+```
+# condition ? value_if_true : value_if_false
+variable "create_backup" {
+  type    = bool
+  default = false
+}
+
+resource "local_file" "backup" {
+  count    = var.create_backup ? 1 : 0
+  filename = "${path.module}/backup.txt"
+  content  = "Backup file"
+}
+# if create backup is true, count =1 resource created , false count 0
+```
+
