@@ -4,7 +4,6 @@ resource "aws_s3_bucket" "test_bucket" {
     # bucket name must be unique
     tags = {
       Name = "Learning bucket"
-      Environment = "Learning"
     }
 }
 
