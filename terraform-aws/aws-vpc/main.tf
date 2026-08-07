@@ -54,3 +54,67 @@ resource "aws_route_table_association" "public_rt_assoc" {
 subnet_id = aws_subnet.public_subnet.id
 route_table_id = aws_route_table.public_rt.id
 }
+
+# Create the Security group for the web server
+
+resource "aws_security_group" "web_sg" {
+name = "dev_web_sg"
+description = "Allow HTTP and ssh inbound traffic"
+vpc_id = aws_vpc.my_vpc.id 
+
+# Inbound rule for HTTP 
+
+ingress {
+  description = "HTTP from anywhere"
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+ingress {
+  description = "SSH from anywhere"
+  from_port = 22
+  to_port = 22
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+egress {
+  from_port = 0
+  to_port = 0
+  protocol = "-1" # -1 means all protocol
+  cidr_blocks = ["0.0.0.0/0"]
+}
+tags = {
+  Name = "Dev-Web-SG"
+
+}
+}
+
+# Creating ec2 instance
+resource "aws_instance" "web_server" {
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t3.micro"
+  
+  subnet_id = aws_subnet.public_subnet.id
+  
+  vpc_security_group_ids = [aws_security_group.web_sg.id]
+
+  # The Bash script that runs on first boot
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install -y httpd
+              systemctl start httpd
+              systemctl enable httpd
+              echo "<h1>Hello from Terraform! My custom VPC works!</h1>" > /var/www/html/index.html
+              EOF
+
+  tags = {
+    Name = "Dev-Web-Server"
+  }
+}
+
+output "web_server_public_ip" {
+  value = aws_instance.web_server.public_ip
+}
